@@ -1,0 +1,469 @@
+/* Routes Demo Styles */
+
+:root {
+  --bg: #14171a;
+  --panel: #1b1f23;
+  --panel-raised: #20252a;
+  --line: rgba(237, 234, 227, 0.09);
+  --line-strong: rgba(237, 234, 227, 0.18);
+  --text: #edeae3;
+  --text-muted: #8b9199;
+  --amber: #ffb020;
+  --route-green: #2fa96b;
+  --danger: #e0674a;
+}
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ---------- topbar ---------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--line);
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 4px;
+  background: var(--amber);
+  color: #1a1400;
+  font-family: ui-monospace, monospace;
+  font-weight: 600;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.brand-name {
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+}
+
+.brand-sub {
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.preview-pill {
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--amber);
+  border: 1px solid rgba(255, 176, 32, 0.35);
+  border-radius: 6px;
+  padding: 6px 10px;
+  white-space: nowrap;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--text-muted);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition: background 0.3s ease;
+}
+
+.status-dot.live {
+  background: var(--route-green);
+  box-shadow: 0 0 0 3px rgba(47, 169, 107, 0.18);
+}
+
+.status-dot.demo {
+  background: var(--amber);
+  box-shadow: 0 0 0 3px rgba(255, 176, 32, 0.18);
+}
+
+/* ---------- layout ---------- */
+.layout {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  min-height: 0;
+}
+
+.map-panel {
+  position: relative;
+  background: var(--panel);
+}
+
+.map-el {
+  position: absolute;
+  inset: 0;
+}
+
+.map-caption {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  z-index: 500;
+  background: rgba(20, 23, 26, 0.85);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--text-muted);
+  backdrop-filter: blur(4px);
+  max-width: 70%;
+}
+
+.console-panel {
+  border-left: 1px solid var(--line);
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: var(--bg);
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.block-title {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text);
+}
+
+/* ---------- presets ---------- */
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.preset-chip {
+  font-family: ui-monospace, monospace;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  background: var(--panel-raised);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px 9px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.preset-chip:hover,
+.preset-chip:focus-visible {
+  border-color: var(--line-strong);
+  color: var(--text);
+}
+
+.preset-chip.active {
+  border-color: var(--amber);
+  color: var(--amber);
+}
+
+/* ---------- coordinate inputs ---------- */
+.coord-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.coord-field label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.coord-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.coord-inputs input {
+  width: 100%;
+  background: var(--panel-raised);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: ui-monospace, monospace;
+  font-size: 13px;
+  padding: 9px 10px;
+}
+
+.coord-inputs input:focus-visible,
+.build-btn:focus-visible,
+.preset-chip:focus-visible,
+.copy-btn:focus-visible,
+.about-toggle:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 1px;
+}
+
+/* ---------- build button ---------- */
+.build-btn {
+  margin-top: 4px;
+  background: var(--amber);
+  color: #1a1400;
+  border: none;
+  border-radius: 6px;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 13.5px;
+  padding: 12px;
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.1s ease;
+}
+
+.build-btn:hover {
+  filter: brightness(1.08);
+}
+
+.build-btn:active {
+  transform: translateY(1px);
+}
+
+.build-btn:disabled {
+  filter: grayscale(0.5) brightness(0.75);
+  cursor: progress;
+}
+
+.error-line {
+  margin: 0;
+  font-size: 12px;
+  color: var(--danger);
+  min-height: 14px;
+}
+
+/* ---------- stats ---------- */
+.stats-block {
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.stat {
+  background: var(--panel-raised);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-family: ui-monospace, monospace;
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.stat-unit {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.stat-sub {
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--line);
+}
+
+/* ---------- json panel ---------- */
+.json-block {
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+}
+
+.json-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.copy-btn {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--text-muted);
+  border-radius: 6px;
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  padding: 5px 9px;
+  cursor: pointer;
+}
+
+.copy-btn:hover {
+  color: var(--text);
+  border-color: var(--line-strong);
+}
+
+.copy-btn.copied {
+  color: var(--route-green);
+  border-color: var(--route-green);
+}
+
+.json-view {
+  background: #0f1113;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 12px;
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #c9d1d9;
+  overflow-x: auto;
+  margin: 0;
+}
+
+.json-key {
+  color: #7fb4ff;
+}
+
+.json-str {
+  color: #9fd47f;
+}
+
+.json-num {
+  color: var(--amber);
+}
+
+/* ---------- about panel ---------- */
+.about-block {
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+}
+
+.about-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0;
+  cursor: pointer;
+}
+
+.about-toggle:hover {
+  color: var(--text);
+}
+
+.about-toggle .chev {
+  margin-left: auto;
+  transition: transform 0.15s ease;
+}
+
+.about-toggle .chev.open {
+  transform: rotate(180deg);
+}
+
+.about-list {
+  margin: 4px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.about-row dt {
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--amber);
+  margin-bottom: 3px;
+}
+
+.about-row dd {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* ---------- leaflet overrides ---------- */
+.leaflet-container {
+  background: var(--panel) !important;
+  font-family: inherit;
+}
+
+.route-tooltip {
+  background: var(--panel-raised);
+  border: 1px solid var(--line);
+  color: var(--text);
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  border-radius: 4px;
+  box-shadow: none;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 860px) {
+  .layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: 45vh 1fr;
+  }
+  .console-panel {
+    border-left: none;
+    border-top: 1px solid var(--line);
+  }
+  .map-panel {
+    min-height: 45vh;
+  }
+}
+
