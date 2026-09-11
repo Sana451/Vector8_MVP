@@ -12,3 +12,8 @@ backend/app/frontend/
 
 # Serena IDE
 .serena/
+
+# Environment files
+.env
+.env.local
+.env.*.local

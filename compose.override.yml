@@ -1,5 +1,4 @@
 services:
-
   proxy:
     image: traefik:v3.7
     ports:
@@ -26,11 +25,9 @@ services:
   db:
     ports:
       - "5432:5432"
-
   adminer:
     ports:
       - "8080:8080"
-
   backend:
     ports:
       - "8000:8000"
@@ -52,6 +49,10 @@ services:
           target: /app/backend
           ignore:
             - .venv
+            - __pycache__
+            - .pytest_cache
+            - .ruff_cache
+            - htmlcov
         - path: ./backend/pyproject.toml
           action: rebuild
         - path: ./frontend
@@ -61,21 +62,25 @@ services:
             - ./frontend/dist
             - ./frontend/blob-report
             - ./frontend/test-results
-    # TODO: remove once coverage is done locally
+    # Volumes for development - mount entire backend directory
     volumes:
+      - ./backend/app:/app/backend/app
+      - ./backend/tests:/app/backend/tests
+      - ./backend/scripts:/app/backend/scripts
+      - ./backend/pyproject.toml:/app/backend/pyproject.toml
+      - ./backend/alembic.ini:/app/backend/alembic.ini
+      - ./backend/alembic:/app/backend/alembic
       - ./backend/htmlcov:/app/backend/htmlcov
     environment:
       FASTAPI_ENV: "development"
       SMTP_HOST: "mailpit"
       SMTP_PORT: "1025"
       SMTP_TLS: "false"
-
   mailpit:
     image: axllent/mailpit
     ports:
       - "8025:8025"
       - "1025:1025"
-
   playwright:
     build:
       context: .

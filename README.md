@@ -46,6 +46,7 @@ cd Vector8
 - Docker and Docker Compose installed
 - ~5-10 minutes setup time
 - Ports 8000, 5432, 8080 available
+- `.env` file (automatically created from `.env.example` if missing)
 
 ### Option 1: Using Makefile (Recommended)
 
@@ -61,17 +62,34 @@ make fresh
 If you don't have `make` installed, run this single command:
 
 ```bash
-docker compose down -v && docker compose build && docker compose up -d && sleep 15 && docker compose exec -T backend bash -c "cd /app/backend && alembic upgrade head" && docker compose exec -T backend bash -c "cd /app/backend && python app/initial_data.py" && docker compose logs -f
+[ ! -f .env ] && cp .env.example .env && echo "✓ Created .env from .env.example"; docker compose down -v && docker compose build && docker compose up -d && sleep 15 && docker compose exec -T backend bash -c "cd /app/backend && alembic upgrade head" && docker compose exec -T backend bash -c "cd /app/backend && python app/initial_data.py" && docker compose logs -f
+```
+
+Or paste this formatted version for better readability:
+
+```bash
+# Create .env if it doesn't exist
+[ ! -f .env ] && cp .env.example .env && echo "✓ Created .env from .env.example"
+
+# Then run the full setup
+docker compose down -v \
+  && docker compose build \
+  && docker compose up -d \
+  && sleep 15 \
+  && docker compose exec -T backend bash -c "cd /app/backend && alembic upgrade head" \
+  && docker compose exec -T backend bash -c "cd /app/backend && python app/initial_data.py" \
+  && docker compose logs -f
 ```
 
 This command:
-1. Removes old containers and volumes
-2. Rebuilds Docker images
-3. Starts all services
-4. Waits for database to be ready
-5. Runs database migrations
-6. Creates initial data
-7. Shows live logs in the terminal
+1. **Creates .env file** if it doesn't exist (from .env.example)
+2. Removes old containers and volumes
+3. Rebuilds Docker images
+4. Starts all services
+5. Waits for database to be ready
+6. Runs database migrations
+7. Creates initial data
+8. Shows live logs in the terminal
 
 ### Access the Application
 

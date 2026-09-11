@@ -89,5 +89,9 @@ services:
       - traefik.http.routers.backend-http.rule=Host(`${DOMAIN:-localhost}`)
       - traefik.http.routers.backend-http.entrypoints=http
 
+    # Development volumes for code synchronization
+    volumes:
+      - /app/.venv  # Preserve virtual environment (don't sync from host)
+
 volumes:
   app-db-data:
