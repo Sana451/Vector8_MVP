@@ -29,6 +29,17 @@ The demo UI provides an intuitive interface to:
 
 ---
 
+## 📥 Clone the Repository
+
+First, clone the Vector8 repository from GitHub:
+
+```bash
+git clone https://github.com/Sana451/Vector8.git
+cd Vector8
+```
+
+---
+
 ## ⚡ Quick Start
 
 ### System Requirements
