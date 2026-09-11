@@ -9,3 +9,6 @@ backend/app/frontend/
 
 # JetBrains IDEs
 .idea/
+
+# Serena IDE
+.serena/
