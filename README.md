@@ -47,31 +47,35 @@ cd Vector8
 - ~5-10 minutes setup time
 - Ports 8000, 5432, 8080 available
 - `.env` file (automatically created from `.env.example` if missing)
+- `bun` package manager installed (for frontend build - will be done automatically)
 
 ### Option 1: Using Makefile (Recommended)
 
-If you have `make` installed:
+If you have `make` installed, just run:
 
 ```bash
-# Complete fresh setup (cleans, builds, starts, runs migrations)
+# Complete fresh setup (builds frontend, cleans, builds Docker images, starts, migrates)
 make fresh
 ```
 
 ### Option 2: Using Docker Compose Directly
 
-If you don't have `make` installed, run this single command:
+If you don't have `make` installed, run this single command that builds frontend and starts everything:
 
 ```bash
-[ ! -f .env ] && cp .env.example .env && echo "✓ Created .env from .env.example"; docker compose down -v && docker compose build && docker compose up -d && sleep 15 && docker compose exec -T backend bash -c "cd /app/backend && alembic upgrade head" && docker compose exec -T backend bash -c "cd /app/backend && python app/initial_data.py" && docker compose logs -f
+cd frontend && bun install && bun run build && cd .. && [ ! -f .env ] && cp .env.example .env && echo "✓ Created .env from .env.example"; docker compose down -v && docker compose build && docker compose up -d && sleep 15 && docker compose exec -T backend bash -c "cd /app/backend && alembic upgrade head" && docker compose exec -T backend bash -c "cd /app/backend && python app/initial_data.py" && docker compose logs -f
 ```
 
-Or paste this formatted version for better readability:
+Or, for better readability, paste this formatted version:
 
 ```bash
+# Build frontend first
+cd frontend && bun install && bun run build && cd ..
+
 # Create .env if it doesn't exist
 [ ! -f .env ] && cp .env.example .env && echo "✓ Created .env from .env.example"
 
-# Then run the full setup
+# Then run the full Docker setup
 docker compose down -v \
   && docker compose build \
   && docker compose up -d \
@@ -81,15 +85,16 @@ docker compose down -v \
   && docker compose logs -f
 ```
 
-This command:
-1. **Creates .env file** if it doesn't exist (from .env.example)
-2. Removes old containers and volumes
-3. Rebuilds Docker images
-4. Starts all services
-5. Waits for database to be ready
-6. Runs database migrations
-7. Creates initial data
-8. Shows live logs in the terminal
+This command automatically:
+1. **Builds the frontend** (React/TypeScript compilation) to `backend/app/frontend`
+2. **Creates .env file** if it doesn't exist (from .env.example)
+3. **Removes old containers and volumes** 
+4. **Rebuilds Docker images**
+5. **Starts all services** (backend, database, mailpit, etc.)
+6. **Waits for database to be ready**
+7. **Runs database migrations**
+8. **Creates initial data**
+9. **Shows live logs** in the terminal
 
 ### Access the Application
 

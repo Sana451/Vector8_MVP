@@ -60,9 +60,19 @@ services:
           ignore:
             - ./frontend/node_modules
             - ./frontend/dist
-    # Volumes for development - mount entire backend directory
+    # Volumes for development - mount backend directories but NOT frontend
+    # Frontend is built in Docker and should not be synced from host
     volumes:
-      - ./backend/app:/app/backend/app
+      - ./backend/app/api:/app/backend/app/api
+      - ./backend/app/core:/app/backend/app/core
+      - ./backend/app/infrastructure:/app/backend/app/infrastructure
+      - ./backend/app/services:/app/backend/app/services
+      - ./backend/app/crud.py:/app/backend/app/crud.py
+      - ./backend/app/models.py:/app/backend/app/models.py
+      - ./backend/app/utils.py:/app/backend/app/utils.py
+      - ./backend/app/initial_data.py:/app/backend/app/initial_data.py
+      - ./backend/app/__init__.py:/app/backend/app/__init__.py
+      - ./backend/app/main.py:/app/backend/app/main.py
       - ./backend/tests:/app/backend/tests
       - ./backend/scripts:/app/backend/scripts
       - ./backend/pyproject.toml:/app/backend/pyproject.toml
@@ -79,3 +89,4 @@ services:
     ports:
       - "8025:8025"
       - "1025:1025"
+

@@ -1,4 +1,4 @@
-.PHONY: help up down clean fresh migrate logs restart ps build check-env logs-backend logs-db shell-backend test check-db view-db dev-start dev-stop dev-logs health lint format format-check
+.PHONY: help up down clean fresh migrate logs restart ps build check-env logs-backend logs-db shell-backend test check-db view-db dev-start dev-stop dev-logs health lint format format-check build-frontend
 
 # Use bash shell explicitly
 SHELL := /bin/bash
@@ -13,10 +13,28 @@ check-env:
 		echo "✓ .env file already exists"; \
 	fi
 
+# Build frontend (IMPORTANT: must be run before docker compose)
+build-frontend:
+	@echo "Building frontend..."
+	@if [ ! -d "frontend" ]; then \
+		echo "❌ Error: frontend directory not found"; \
+		exit 1; \
+	fi
+	@if ! command -v bun &> /dev/null; then \
+		echo "❌ Error: bun is not installed. Install from https://bun.sh"; \
+		exit 1; \
+	fi
+	@echo "Installing dependencies..."
+	cd frontend && bun install
+	@echo "Building frontend..."
+	cd frontend && bun run build
+	@echo "✓ Frontend built successfully to backend/app/frontend"
+
 # Default target
 help:
 	@echo "Available commands:"
 	@echo ""
+	@echo "  make build-frontend  - Build frontend (REQUIRED before docker compose)"
 	@echo "  make up              - Start containers with visible logs (no -d flag)"
 	@echo "  make down            - Stop running containers"
 	@echo "  make clean           - Remove stopped containers and volumes (WARNING: deletes data)"
@@ -55,23 +73,47 @@ clean: check-env
 	fi
 
 # Complete fresh setup (for first run or full reset)
-fresh: check-env clean build
+fresh: check-env
 	@echo ""
-	@echo "Starting fresh setup (first run)..."
-	@echo "✓ Containers will start with volume mounts for development"
-	@echo "✓ All backend code will be synchronized between host and container"
-	@echo "✓ Migrations will run automatically"
+	@echo "🚀 Starting fresh setup..."
 	@echo ""
+	@echo "Step 1: Building frontend..."
+	@if [ ! -d "frontend" ]; then \
+		echo "❌ Error: frontend directory not found"; \
+		exit 1; \
+	fi
+	@if ! command -v bun &> /dev/null; then \
+		echo "❌ Error: bun is not installed. Install from https://bun.sh"; \
+		exit 1; \
+	fi
+	cd frontend && bun install && bun run build && cd ..
+	@echo "✓ Frontend built successfully"
+	@echo ""
+	@echo "Step 2: Cleaning up old containers and volumes..."
+	docker compose down -v
+	@echo "✓ Cleanup complete"
+	@echo ""
+	@echo "Step 3: Building Docker images..."
+	docker compose build
+	@echo "✓ Docker images built"
+	@echo ""
+	@echo "Step 4: Starting services..."
 	docker compose up -d
-	@echo "Waiting 15 seconds for services to start..."
+	@echo "⏳ Waiting for services to start..."
 	@sleep 15
-	@echo "Running database migrations..."
-	@docker compose exec -T backend bash -c "cd /app/backend && alembic upgrade head"
-	@echo "Creating initial data..."
-	@docker compose exec -T backend bash -c "cd /app/backend && python app/initial_data.py"
 	@echo ""
-	@echo "✓ Setup complete! Volume mounts configured for development"
-	@echo "✓ You can now edit files locally and changes will appear in the container"
+	@echo "Step 5: Running database migrations..."
+	@docker compose exec -T backend bash -c "cd /app/backend && alembic upgrade head"
+	@echo "✓ Migrations complete"
+	@echo ""
+	@echo "Step 6: Creating initial data..."
+	@docker compose exec -T backend bash -c "cd /app/backend && python app/initial_data.py"
+	@echo "✓ Initial data created"
+	@echo ""
+	@echo "✅ Setup complete!"
+	@echo "✓ Frontend is built and served by backend"
+	@echo "✓ Volume mounts configured for development"
+	@echo "✓ You can now edit backend files locally and changes will appear in the container"
 	@echo ""
 	@echo "Starting containers with logs..."
 	@echo ""
@@ -140,7 +182,7 @@ view-db:
 	@echo ""
 
 # Quick development workflow
-dev-start: check-env build up
+dev-start: check-env build-frontend build up
 
 dev-stop: down
 
