@@ -55,7 +55,7 @@ def upgrade():
         sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
         sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
         sa.Column('route_geometry', sa.Text(), nullable=True),
-        sa.Column('geometry_geojson', sa.String(length=65535), nullable=True),
+        sa.Column('geometry_geojson', sa.Text(), nullable=True),
         sa.PrimaryKeyConstraint('id'),
     ]
 

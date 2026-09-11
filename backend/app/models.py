@@ -183,11 +183,9 @@ class Route(SQLModel, table=True):
     )
     route_geometry: str | None = Field(
         default=None,
-        max_length=65535,
         nullable=True,
     )
     geometry_geojson: str | None = Field(
         default=None,
-        max_length=65535,
         nullable=True,
     )
