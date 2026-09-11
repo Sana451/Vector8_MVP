@@ -65,6 +65,9 @@ class Settings(BaseSettings):
     FIRST_SUPERUSER: EmailStr
     FIRST_SUPERUSER_PASSWORD: str
 
+    # OSRM Configuration
+    OSRM_BASE_URL: str = "https://router.project-osrm.org"
+
     def _check_default_secret(self, var_name: str, value: str | None) -> None:
         if value == "changethis":
             message = (

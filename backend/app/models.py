@@ -1,7 +1,7 @@
 import uuid
 from datetime import UTC, datetime
 
-from pydantic import EmailStr
+from pydantic import ConfigDict, EmailStr
 from sqlalchemy import DateTime
 from sqlmodel import Field, Relationship, SQLModel
 
@@ -131,3 +131,63 @@ class TokenPayload(SQLModel):
 class NewPassword(SQLModel):
     token: str
     new_password: str = Field(min_length=8, max_length=128)
+
+
+# Route models - DTO for API
+class RouteGeometry(SQLModel):
+    """GeoJSON LineString geometry"""
+    type: str = "LineString"
+    coordinates: list[list[float]]
+
+
+class RouteCreate(SQLModel):
+    """Route data for creation - DTO"""
+    start_lat: float
+    start_lon: float
+    end_lat: float
+    end_lon: float
+
+
+class RoutePublic(SQLModel):
+    """Route data for API response - DTO"""
+    id: uuid.UUID
+    start_lat: float
+    start_lon: float
+    end_lat: float
+    end_lon: float
+    distance_meters: float
+    duration_seconds: float
+    created_at: datetime | None = None
+    geometry: RouteGeometry | None = None
+
+
+# Database model - only ORM
+class Route(SQLModel, table=True):
+    """Database route model - only for ORM"""
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    start_lat: float
+    start_lon: float
+    end_lat: float
+    end_lon: float
+    distance_meters: float
+    duration_seconds: float
+    created_at: datetime | None = Field(
+        default_factory=get_datetime_utc,
+        sa_type=DateTime(timezone=True),  # type: ignore
+    )
+    updated_at: datetime | None = Field(
+        default_factory=get_datetime_utc,
+        sa_type=DateTime(timezone=True),  # type: ignore
+    )
+    route_geometry: str | None = Field(
+        default=None,
+        max_length=65535,
+        nullable=True,
+    )
+    geometry_geojson: str | None = Field(
+        default=None,
+        max_length=65535,
+        nullable=True,
+    )
