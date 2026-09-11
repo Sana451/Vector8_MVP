@@ -3,7 +3,6 @@
 from sqlmodel import Session
 
 from app import crud
-from app.models import Route
 
 
 def test_create_route(db: Session) -> None:

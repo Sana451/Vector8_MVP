@@ -218,12 +218,12 @@ This confirms that your route requests are being persisted in the database and a
 
 ## 📖 Documentation
 
-### Development & Setup
+### Understanding the Project
+- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - System architecture and component design
 - **[DEVELOPMENT.md](./development.md)** - Detailed development setup and workflow
-- **[MAKEFILE_USAGE.md](./MAKEFILE_USAGE.md)** - Complete Makefile commands reference
-- **[REBRANDING.md](./REBRANDING.md)** - Details of Vector8 rebranding
 
-### Project Specific Docs
+### How-to Guides
+- **[MAKEFILE_USAGE.md](./MAKEFILE_USAGE.md)** - Complete Makefile commands reference
 - **[backend/README.md](./backend/README.md)** - Backend API documentation
 - **[frontend/README.md](./frontend/README.md)** - Frontend development guide
 

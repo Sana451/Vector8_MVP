@@ -136,3 +136,16 @@ health:
 	@echo "Checking health status..."
 	curl -s http://localhost:8000/api/v1/utils/health-check/ || echo "Backend not responding"
 
+# Code quality and formatting
+lint:
+	@echo "Running linters (ruff, mypy)..."
+	docker compose exec backend ruff check app tests
+	docker compose exec backend mypy app
+format:
+	@echo "Formatting code with black and isort..."
+	docker compose exec backend black app tests
+	docker compose exec backend isort app tests
+format-check:
+	@echo "Checking code formatting..."
+	docker compose exec backend black --check app tests
+	docker compose exec backend isort --check-only app tests

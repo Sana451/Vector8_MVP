@@ -29,6 +29,8 @@ dev = [
     "ty>=0.0.25",
     "ruff<1.0.0,>=0.2.2",
     "coverage<8.0.0,>=7.4.3",
+    "black<25.0,>=24.0",
+    "isort<6.0,>=5.13.0",
 ]
 
 [build-system]
@@ -86,3 +88,12 @@ entrypoint = "app.main:app"
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 asyncio_default_fixture_scope = "function"
+
+[tool.black]
+line-length = 120
+target-version = ["py314"]
+
+[tool.isort]
+profile = "black"
+line_length = 120
+skip_glob = ["*/migrations/*"]

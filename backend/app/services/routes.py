@@ -2,12 +2,11 @@
 
 import json
 import logging
-from typing import Any
 
 from sqlmodel import Session
 
 from app import crud
-from app.infrastructure.osrm import OSRMClient, RouteResponse
+from app.infrastructure.osrm import OSRMClient
 from app.models import Route, RouteGeometry, RoutePublic
 
 logger = logging.getLogger(__name__)

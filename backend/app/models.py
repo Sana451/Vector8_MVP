@@ -1,7 +1,7 @@
 import uuid
 from datetime import UTC, datetime
 
-from pydantic import ConfigDict, EmailStr
+from pydantic import EmailStr
 from sqlalchemy import DateTime
 from sqlmodel import Field, Relationship, SQLModel
 
@@ -163,9 +163,10 @@ class RoutePublic(SQLModel):
 
 # Database model - only ORM
 class Route(SQLModel, table=True):
-    """Database route model - only for ORM"""
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    """Database route model - only for ORM.
 
+    Stores complete route information including geometry and metrics.
+    """
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     start_lat: float
     start_lon: float

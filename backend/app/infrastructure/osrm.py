@@ -1,6 +1,5 @@
 """OSRM (Open Source Routing Machine) client for route calculation."""
 
-import json
 import logging
 from typing import Any
 

@@ -1,13 +1,11 @@
 """API tests for routes endpoint."""
 
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 
 from fastapi.testclient import TestClient
-from sqlmodel import Session
 
 from app.core.config import settings
 from app.infrastructure.osrm import (
-    OSRMClient,
     OSRMInvalidCoordinatesError,
     OSRMNotFoundError,
     OSRMServerError,
