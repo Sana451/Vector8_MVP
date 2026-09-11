@@ -31,22 +31,34 @@ app = FastAPI(
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
     generate_unique_id_function=custom_generate_unique_id,
 )
+
+# Configure CORS - allow all origins in development, specific origin in production
+cors_origins = ["*"] if settings.FASTAPI_ENV == "development" else [settings.FRONTEND_HOST]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.FRONTEND_HOST],
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
-# Mount API routes first
+# Mount API routes
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
 # Mount frontend static files
 if FRONTEND_DIR.exists():
+    # Mount assets directory
     app.mount("/assets", StaticFiles(directory=str(FRONTEND_DIR / "assets")), name="assets")
 
-    # Serve index.html for client-side routing
+    # Serve index.html for root path
+    @app.get("/")
+    async def serve_root() -> FileResponse:
+        """Serve index.html for root path."""
+        return FileResponse(FRONTEND_DIR / "index.html")
+
+    # Serve index.html for client-side routing (all other paths)
     @app.get("/{full_path:path}")
     async def serve_spa(full_path: str) -> FileResponse:
         """Serve SPA with fallback to index.html for client-side routes."""

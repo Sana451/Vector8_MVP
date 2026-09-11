@@ -186,11 +186,10 @@ This confirms that your route requests are being persisted in the database and a
 - 🚀 [React](https://react.dev) for the frontend.
   - 🧩 Built into the backend application and served by FastAPI on the same domain as the API.
   - 💃 Using TypeScript, hooks, [Vite](https://vitejs.dev), and other parts of a modern frontend stack.
-  - 🎨 [Tailwind CSS](https://tailwindcss.com) and [shadcn/ui](https://ui.shadcn.com) for the frontend components.
-  - 🗺️ [Leaflet](https://leafletjs.com) for interactive map visualization.
-  - 🤖 An automatically generated frontend client.
-  - 🧪 [Playwright](https://playwright.dev) for end-to-end testing.
-  - 🦇 Dark mode support.
+    - 🎨 [Tailwind CSS](https://tailwindcss.com) and [shadcn/ui](https://ui.shadcn.com) for the frontend components.
+    - 🗺️ [Leaflet](https://leafletjs.com) for interactive map visualization.
+    - 🤖 An automatically generated frontend client.
+    - 🦇 Dark mode support.
 - ☁️ [FastAPI Cloud](https://fastapicloud.com) for deployment.
 - 🐋 [Docker Compose](https://www.docker.com) for local services and self-hosted deployment.
   - 📞 [Traefik](https://traefik.io) as a reverse proxy with automatic HTTPS.
@@ -260,7 +259,7 @@ This project demonstrates:
 - ✅ API-first development with automatic OpenAPI documentation
 - ✅ Docker-based local development workflow
 - ✅ Production-ready security practices (JWT, password hashing)
-- ✅ Automated testing with Pytest and Playwright
+- ✅ Automated testing with Pytest
 
 ---
 
