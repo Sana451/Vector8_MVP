@@ -126,7 +126,7 @@ Once started, open your browser:
 1. Open http://localhost:8000 in your browser
 2. Login options:
    - **Option A: Create a new user**
-     - Click "Register" button
+     - Click "Sign up" button
      - Fill in your credentials
      - Submit and login with your new account
    

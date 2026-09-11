@@ -35,6 +35,8 @@ services:
       context: .
       dockerfile: backend/Dockerfile
     # Use uvicorn directly without reload - Docker handles reloading via develop.watch
+    # Single worker prevents race conditions in development
+    # Note: For production, increase workers (e.g., --workers 4)
     command:
       - uvicorn
       - app.main:app
@@ -42,6 +44,8 @@ services:
       - "0.0.0.0"
       - --port
       - "8000"
+      - --workers
+      - "1"
     develop:
       watch:
         - path: ./backend
