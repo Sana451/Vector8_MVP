@@ -3,9 +3,149 @@
 [![Test Docker Compose](../../actions/workflows/test-docker-compose.yml/badge.svg)](../../actions/workflows/test-docker-compose.yml)
 [![Test Backend](../../actions/workflows/test-backend.yml/badge.svg)](../../actions/workflows/test-backend.yml)
 
-## Overview
+## 🎯 Overview
 
-Vector8 is a full-stack route optimization platform built with modern web technologies. It provides an interactive interface for calculating and visualizing optimal routes using the Open Source Routing Machine (OSRM).
+**Vector8** is a demonstration project showcasing route optimization and logistics planning capabilities. It provides a full-stack application for calculating, storing, and visualizing optimal routes between any two points using real-world routing data.
+
+### 🚀 Key Capabilities
+
+- **Interactive Route Calculation**: Calculate optimal driving routes with real-time visualization
+- **Multiple Access Methods**: 
+  - 🖥️ **Demo UI** - Beautiful interactive dashboard with map visualization
+  - 📚 **Swagger API** - Full REST API documentation and testing interface
+- **Route Storage**: Save routes to PostgreSQL database with complete geometry data
+- **Route Visualization**: Interactive Leaflet map showing distance, duration, and route geometry
+- **Statistics Display**: Real-time route metrics with smooth animations
+
+### 📸 Routes Demo Interface
+
+![Vector8 Routes Demo UI](img/route-ui-preview.png)
+
+The demo UI provides an intuitive interface to:
+- Select predefined route pairs or enter custom coordinates
+- View interactive map with route visualization
+- See distance and duration statistics
+- Access complete route data in JSON format
+
+---
+
+## ⚡ Quick Start
+
+### System Requirements
+- Docker and Docker Compose installed
+- ~5-10 minutes setup time
+- Ports 8000, 5432, 8080 available
+
+### Option 1: Using Makefile (Recommended)
+
+If you have `make` installed:
+
+```bash
+# Complete fresh setup (cleans, builds, starts, runs migrations)
+make fresh
+```
+
+### Option 2: Using Docker Compose Directly
+
+If you don't have `make` installed, run this single command:
+
+```bash
+docker compose down -v && docker compose build && docker compose up -d && sleep 15 && docker compose exec -T backend bash -c "cd /app/backend && alembic upgrade head" && docker compose exec -T backend bash -c "cd /app/backend && python app/initial_data.py" && docker compose logs -f
+```
+
+This command:
+1. Removes old containers and volumes
+2. Rebuilds Docker images
+3. Starts all services
+4. Waits for database to be ready
+5. Runs database migrations
+6. Creates initial data
+7. Shows live logs in the terminal
+
+### Access the Application
+
+Once started, open your browser:
+
+- **🎨 Frontend Dashboard**: http://localhost:8000
+- **🗺️ Routes Demo**: http://localhost:8000/routes
+- **📚 API Documentation (Swagger)**: http://localhost:8000/docs
+- **💾 Database UI (Adminer)**: http://localhost:8080
+- **📧 Email Testing (Mailpit)**: http://localhost:8025
+
+---
+
+## 🔄 How to Request a Route
+
+### Method 1: Using the Demo UI (Recommended for Testing)
+
+1. Open http://localhost:8000/routes in your browser
+2. Select a predefined route from the chips or enter custom coordinates
+3. Click "Calculate Route" button
+4. View the route on the interactive map with distance and time statistics
+
+### Method 2: Using Swagger API
+
+1. Open http://localhost:8000/docs
+2. Find the POST `/api/v1/routes/` endpoint
+3. Click "Try it out" and enter:
+   ```json
+   {
+     "start_lat": 32.7767,
+     "start_lon": -96.797,
+     "end_lat": 29.7604,
+     "end_lon": -95.3698
+   }
+   ```
+4. Execute and view the response with complete route geometry
+
+### Method 3: Using curl
+
+```bash
+curl -X POST http://localhost:8000/api/v1/routes/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "start_lat": 32.7767,
+    "start_lon": -96.797,
+    "end_lat": 29.7604,
+    "end_lon": -95.3698
+  }'
+```
+
+---
+
+## ✅ Verify Routes in Database
+
+After requesting a route through the UI, API, or curl, you can verify that the data was saved to PostgreSQL:
+
+### Step 1: Open Adminer Database UI
+
+Open http://localhost:8080 in your browser
+
+### Step 2: Log in to PostgreSQL
+
+- **Server**: `db`
+- **Username**: `postgres`
+- **Password**: `password`
+- **Database**: `app`
+
+### Step 3: View the Routes Table
+
+1. In the left sidebar, expand **public** schema
+2. Click on the **route** table
+3. You'll see all routes created through the API with:
+   - **id**: Unique route identifier
+   - **start_lat, start_lon**: Start coordinates
+   - **end_lat, end_lon**: End coordinates
+   - **distance_km**: Calculated distance
+   - **duration_minutes**: Travel time
+   - **geometry**: Complete route GeoJSON data (viewable in Leaflet map)
+   - **created_at**: Timestamp of creation
+
+![Adminer Routes Table Preview](img/adminer-route-preview.png)
+
+This confirms that your route requests are being persisted in the database and are ready for retrieval through subsequent API calls.
+
+---
 
 ## Technology Stack and Features
 
@@ -33,6 +173,12 @@ Vector8 is a full-stack route optimization platform built with modern web techno
 - ✅ Tests with [Pytest](https://pytest.org).
 - 🏭 CI (continuous integration) and CD (continuous deployment) based on GitHub Actions.
 
+## 📚 Screenshots & Features
+
+### Interactive Route Visualization
+
+![API docs](img/docs.png)
+
 ### Dashboard Login
 
 ![Dashboard login screenshot](img/login.png)
@@ -57,76 +203,38 @@ Vector8 is a full-stack route optimization platform built with modern web techno
 
 ![Mailpit screenshot](img/mailpit.png)
 
-### Interactive API Documentation
+---
 
-![API docs](img/docs.png)
+## 📖 Documentation
 
-## How to Use It
+### Development & Setup
+- **[DEVELOPMENT.md](./development.md)** - Detailed development setup and workflow
+- **[MAKEFILE_USAGE.md](./MAKEFILE_USAGE.md)** - Complete Makefile commands reference
+- **[REBRANDING.md](./REBRANDING.md)** - Details of Vector8 rebranding
 
-### Quick Start
+### Project Specific Docs
+- **[backend/README.md](./backend/README.md)** - Backend API documentation
+- **[frontend/README.md](./frontend/README.md)** - Frontend development guide
 
-Vector8 uses a Makefile for easy project management. To get started:
+### Deployment
+- **[deployment.md](./deployment.md)** - FastAPI Cloud deployment guide
+- **[deployment-docker-compose.md](./deployment-docker-compose.md)** - Docker Compose deployment guide
 
-#### First Time Setup
-```bash
-make fresh
-```
+---
 
-This will:
-1. Clean up any existing containers and volumes
-2. Build Docker images
-3. Start all services
-4. Run database migrations automatically
-5. Create initial data
-6. Show all logs in the terminal
+## 🎓 Learning Resources
 
-#### Regular Development
-```bash
-make up
-```
+This project demonstrates:
+- ✅ Full-stack architecture with FastAPI + React
+- ✅ Real-time data visualization with Leaflet maps
+- ✅ Database optimization with PostGIS for spatial queries
+- ✅ API-first development with automatic OpenAPI documentation
+- ✅ Docker-based local development workflow
+- ✅ Production-ready security practices (JWT, password hashing)
+- ✅ Automated testing with Pytest and Playwright
 
-Starts containers with visible logs. Press `Ctrl+C` to stop.
+---
 
-#### View Logs
-```bash
-make logs-backend    # View backend logs only
-make logs            # View all logs
-```
-
-#### Other Commands
-```bash
-make down            # Stop containers
-make restart         # Restart containers
-make clean           # Remove containers and volumes (destructive)
-make help            # Show all available commands
-```
-
-For detailed development instructions, see [MAKEFILE_USAGE.md](./MAKEFILE_USAGE.md) and [DEVELOPMENT.md](./development.md)
-
-## Backend Development
-
-Backend docs: [backend/README.md](./backend/README.md).
-
-## Frontend Development
-
-Frontend docs: [frontend/README.md](./frontend/README.md).
-
-## Deployment
-
-FastAPI Cloud deployment: [deployment.md](./deployment.md).
-
-Self-hosted deployment with Docker Compose: [deployment-docker-compose.md](./deployment-docker-compose.md).
-
-## Development
-
-General development docs: [development.md](./development.md).
-
-This includes the local FastAPI and Vite workflow, Docker Compose services, `.env` configuration, and more.
-
-## Release Notes
-
-Check the file [release-notes.md](./release-notes.md).
-
-## License
+## 📝 License
 
 Vector8 is licensed under the terms of the MIT license.
