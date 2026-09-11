@@ -121,22 +121,59 @@ Once started, open your browser:
 - **💾 Database UI (Adminer)**: http://localhost:8080
 - **📧 Email Testing (Mailpit)**: http://localhost:8025
 
----
+#### Frontend Dashboard (http://localhost:8000)
 
-## 🔄 How to Request a Route
+1. Open http://localhost:8000 in your browser
+2. Login options:
+   - **Option A: Create a new user**
+     - Click "Register" button
+     - Fill in your credentials
+     - Submit and login with your new account
+   
+   - **Option B: Login as Superuser** (predefined admin account)
+     - Open `.env` file in the project root
+     - Find credentials: `FIRST_SUPERUSER` and `FIRST_SUPERUSER_PASSWORD`
+     - Use these credentials to login on the dashboard
 
-### Method 1: Using the Demo UI (Recommended for Testing)
+#### Database UI - Adminer (http://localhost:8080)
 
-1. Open http://localhost:8000/routes in your browser
-2. Select a predefined route from the chips or enter custom coordinates
-3. Click "Calculate Route" button
-4. View the route on the interactive map with distance and time statistics
+View and manage the PostgreSQL database:
 
-### Method 2: Using Swagger API
+**Quick Access (Easiest)**
 
-1. Open http://localhost:8000/docs
-2. Find the POST `/api/v1/routes/` endpoint
-3. Click "Try it out" and enter:
+Open this pre-configured link directly:
+```
+http://127.0.0.1:8080/?pgsql=db&username=postgres&db=app&ns=public&select=route
+```
+
+Then simply:
+1. Enter password: Find `POSTGRES_PASSWORD` value in your `.env` file
+2. Click "Login"
+3. You'll be directly in the `route` table!
+
+**Manual Configuration**
+
+Or configure it manually:
+
+1. Open http://localhost:8080 in your browser
+2. Configure connection:
+   - **Server**: `db`
+   - **Username**: `postgres`
+   - **Password**: Find `POSTGRES_PASSWORD` value in your `.env` file
+   - **Database**: `app`
+3. Click "Login"
+4. In the left sidebar, expand **public** schema
+5. Click on the **route** table to view all saved routes
+
+#### Swagger API Documentation (http://localhost:8000/docs)
+
+Test the API interactively:
+
+1. Open http://localhost:8000/docs in your browser
+2. Find the endpoint: **POST** `/api/v1/routes/`
+3. Click on it to expand
+4. Click the **"Try it out"** button
+5. Enter request body:
    ```json
    {
      "start_lat": 32.7767,
@@ -145,9 +182,39 @@ Once started, open your browser:
      "end_lon": -95.3698
    }
    ```
-4. Execute and view the response with complete route geometry
+6. Click **"Execute"** button
+7. View the response in the **"Responses"** section below
+   - See the route geometry, distance, and duration
 
-### Method 3: Using curl
+---
+
+## 🔄 How to Request and View Routes
+
+### Quick Start: Routes Demo UI
+
+1. Open http://localhost:8000/routes in your browser
+2. If not logged in, login with your account (or superuser credentials from `.env`)
+3. Select a predefined route from the chips or enter custom coordinates
+4. Click "Calculate Route" button
+5. View the route on the interactive map with distance and time statistics
+
+### Using the API (Swagger)
+
+1. Go to http://localhost:8000/docs
+2. Find the endpoint: **POST** `/api/v1/routes/`
+3. Click "Try it out"
+4. Enter example coordinates:
+   ```json
+   {
+     "start_lat": 32.7767,
+     "start_lon": -96.797,
+     "end_lat": 29.7604,
+     "end_lon": -95.3698
+   }
+   ```
+5. Click "Execute" and check the "Responses" section for results
+
+### Using curl Command
 
 ```bash
 curl -X POST http://localhost:8000/api/v1/routes/ \
@@ -164,35 +231,27 @@ curl -X POST http://localhost:8000/api/v1/routes/ \
 
 ## ✅ Verify Routes in Database
 
-After requesting a route through the UI, API, or curl, you can verify that the data was saved to PostgreSQL:
+After requesting routes, verify they were saved in PostgreSQL:
 
-### Step 1: Open Adminer Database UI
-
-Open http://localhost:8080 in your browser
-
-### Step 2: Log in to PostgreSQL
-
-- **Server**: `db`
-- **Username**: `postgres`
-- **Password**: `password`
-- **Database**: `app`
-
-### Step 3: View the Routes Table
-
-1. In the left sidebar, expand **public** schema
-2. Click on the **route** table
-3. You'll see all routes created through the API with:
-   - **id**: Unique route identifier
+1. Open http://localhost:8080 (Adminer)
+2. Login with:
+   - **Server**: `db`
+   - **Username**: `postgres`
+   - **Password**: Get from `.env` file (`POSTGRES_PASSWORD`)
+   - **Database**: `app`
+3. Expand **public** schema in the left sidebar
+4. Click on the **route** table
+5. View all routes with:
+   - **id**: Unique identifier
    - **start_lat, start_lon**: Start coordinates
    - **end_lat, end_lon**: End coordinates
    - **distance_km**: Calculated distance
    - **duration_minutes**: Travel time
-   - **geometry**: Complete route GeoJSON data (viewable in Leaflet map)
-   - **created_at**: Timestamp of creation
+   - **geometry**: Complete GeoJSON route data
+   - **created_at**: Creation timestamp
 
 ![Adminer Routes Table Preview](img/adminer-route-preview.png)
 
-This confirms that your route requests are being persisted in the database and are ready for retrieval through subsequent API calls.
 
 ---
 
