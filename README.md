@@ -43,11 +43,11 @@ cd Vector8
 ## ⚡ Quick Start
 
 ### System Requirements
-- Docker and Docker Compose installed
+- **Docker and Docker Compose** installed ✅ (required)
 - ~5-10 minutes setup time
 - Ports 8000, 5432, 8080 available
 - `.env` file (automatically created from `.env.example` if missing)
-- `bun` package manager installed (for frontend build - will be done automatically)
+- `bun` package manager (optional - Docker will be used as fallback for frontend build)
 
 ### Option 1: Using Makefile (Recommended)
 
@@ -60,17 +60,30 @@ make fresh
 
 ### Option 2: Using Docker Compose Directly
 
-If you don't have `make` installed, run this single command that builds frontend and starts everything:
+If you don't have `make` installed:
+
+#### If you have `bun` installed locally:
 
 ```bash
 cd frontend && bun install && bun run build && cd .. && [ ! -f .env ] && cp .env.example .env && echo "✓ Created .env from .env.example"; docker compose down -v && docker compose build && docker compose up -d && sleep 15 && docker compose exec -T backend bash -c "cd /app/backend && alembic upgrade head" && docker compose exec -T backend bash -c "cd /app/backend && python app/initial_data.py" && docker compose logs -f
 ```
 
-Or, for better readability, paste this formatted version:
+#### If you DON'T have `bun` (Docker will build the frontend):
 
 ```bash
-# Build frontend first
-cd frontend && bun install && bun run build && cd ..
+docker run --rm -v "$(pwd)/frontend:/app/frontend" -v "$(pwd)/backend:/app/backend" -w /app/frontend oven/bun:1 bash -c "bun install && bun run build" && [ ! -f .env ] && cp .env.example .env && echo "✓ Created .env from .env.example"; docker compose down -v && docker compose build && docker compose up -d && sleep 15 && docker compose exec -T backend bash -c "cd /app/backend && alembic upgrade head" && docker compose exec -T backend bash -c "cd /app/backend && python app/initial_data.py" && docker compose logs -f
+```
+
+Or, for better readability, the version with Docker frontend build:
+
+```bash
+# Build frontend using Docker
+docker run --rm \
+  -v "$(pwd)/frontend:/app/frontend" \
+  -v "$(pwd)/backend:/app/backend" \
+  -w /app/frontend \
+  oven/bun:1 \
+  bash -c "bun install && bun run build"
 
 # Create .env if it doesn't exist
 [ ! -f .env ] && cp .env.example .env && echo "✓ Created .env from .env.example"
@@ -86,7 +99,7 @@ docker compose down -v \
 ```
 
 This command automatically:
-1. **Builds the frontend** (React/TypeScript compilation) to `backend/app/frontend`
+1. **Builds the frontend** (uses local `bun` if available, or Docker as fallback)
 2. **Creates .env file** if it doesn't exist (from .env.example)
 3. **Removes old containers and volumes** 
 4. **Rebuilds Docker images**
@@ -95,6 +108,8 @@ This command automatically:
 7. **Runs database migrations**
 8. **Creates initial data**
 9. **Shows live logs** in the terminal
+
+**Dependencies**: Only Docker and Docker Compose are required. `bun` is optional.
 
 ### Access the Application
 

@@ -20,14 +20,13 @@ build-frontend:
 		echo "❌ Error: frontend directory not found"; \
 		exit 1; \
 	fi
-	@if ! command -v bun &> /dev/null; then \
-		echo "❌ Error: bun is not installed. Install from https://bun.sh"; \
-		exit 1; \
+	@if command -v bun &> /dev/null; then \
+		echo "✓ Using local bun"; \
+		cd frontend && bun install && bun run build && cd ..; \
+	else \
+		echo "⚠️  bun not found locally, using Docker to build frontend..."; \
+		docker run --rm -v "$(PWD)/frontend:/app/frontend" -v "$(PWD)/backend:/app/backend" -w /app/frontend oven/bun:1 bash -c "bun install && bun run build"; \
 	fi
-	@echo "Installing dependencies..."
-	cd frontend && bun install
-	@echo "Building frontend..."
-	cd frontend && bun run build
 	@echo "✓ Frontend built successfully to backend/app/frontend"
 
 # Default target
@@ -82,11 +81,13 @@ fresh: check-env
 		echo "❌ Error: frontend directory not found"; \
 		exit 1; \
 	fi
-	@if ! command -v bun &> /dev/null; then \
-		echo "❌ Error: bun is not installed. Install from https://bun.sh"; \
-		exit 1; \
+	@if command -v bun &> /dev/null; then \
+		echo "✓ Using local bun"; \
+		cd frontend && bun install && bun run build && cd ..; \
+	else \
+		echo "⚠️  bun not found locally, using Docker to build frontend..."; \
+		docker run --rm -v "$(PWD)/frontend:/app/frontend" -v "$(PWD)/backend:/app/backend" -w /app/frontend oven/bun:1 bash -c "bun install && bun run build"; \
 	fi
-	cd frontend && bun install && bun run build && cd ..
 	@echo "✓ Frontend built successfully"
 	@echo ""
 	@echo "Step 2: Cleaning up old containers and volumes..."
