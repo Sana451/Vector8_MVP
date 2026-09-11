@@ -37,7 +37,7 @@ There are already configurations in place to run the backend through the VS Code
 
 The setup is also already configured so you can run the tests through the VS Code Python tests tab.
 
-## Full Stack with Docker Compose
+## Vector8 with Docker Compose
 
 To run the backend and built frontend in Docker Compose:
 

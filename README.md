@@ -1,7 +1,11 @@
-# Full Stack FastAPI Template
+# Vector8 - Route Optimization Platform
 
 [![Test Docker Compose](../../actions/workflows/test-docker-compose.yml/badge.svg)](../../actions/workflows/test-docker-compose.yml)
 [![Test Backend](../../actions/workflows/test-backend.yml/badge.svg)](../../actions/workflows/test-backend.yml)
+
+## Overview
+
+Vector8 is a full-stack route optimization platform built with modern web technologies. It provides an interactive interface for calculating and visualizing optimal routes using the Open Source Routing Machine (OSRM).
 
 ## Technology Stack and Features
 
@@ -9,10 +13,12 @@
   - 🧰 [SQLModel](https://sqlmodel.tiangolo.com) for the Python SQL database interactions (ORM).
   - 🔍 [Pydantic](https://docs.pydantic.dev), used by FastAPI, for the data validation and settings management.
   - 💾 [PostgreSQL](https://www.postgresql.org) as the SQL database.
+  - 🗺️ PostGIS for spatial data and route geometry storage.
 - 🚀 [React](https://react.dev) for the frontend.
   - 🧩 Built into the backend application and served by FastAPI on the same domain as the API.
   - 💃 Using TypeScript, hooks, [Vite](https://vitejs.dev), and other parts of a modern frontend stack.
   - 🎨 [Tailwind CSS](https://tailwindcss.com) and [shadcn/ui](https://ui.shadcn.com) for the frontend components.
+  - 🗺️ [Leaflet](https://leafletjs.com) for interactive map visualization.
   - 🤖 An automatically generated frontend client.
   - 🧪 [Playwright](https://playwright.dev) for end-to-end testing.
   - 🦇 Dark mode support.
@@ -57,7 +63,45 @@
 
 ## How to Use It
 
-Click the **Use this template** button at the top of this page to create a new repository.
+### Quick Start
+
+Vector8 uses a Makefile for easy project management. To get started:
+
+#### First Time Setup
+```bash
+make fresh
+```
+
+This will:
+1. Clean up any existing containers and volumes
+2. Build Docker images
+3. Start all services
+4. Run database migrations automatically
+5. Create initial data
+6. Show all logs in the terminal
+
+#### Regular Development
+```bash
+make up
+```
+
+Starts containers with visible logs. Press `Ctrl+C` to stop.
+
+#### View Logs
+```bash
+make logs-backend    # View backend logs only
+make logs            # View all logs
+```
+
+#### Other Commands
+```bash
+make down            # Stop containers
+make restart         # Restart containers
+make clean           # Remove containers and volumes (destructive)
+make help            # Show all available commands
+```
+
+For detailed development instructions, see [MAKEFILE_USAGE.md](./MAKEFILE_USAGE.md) and [DEVELOPMENT.md](./development.md)
 
 ## Backend Development
 
@@ -85,4 +129,4 @@ Check the file [release-notes.md](./release-notes.md).
 
 ## License
 
-The Full Stack FastAPI Template is licensed under the terms of the MIT license.
+Vector8 is licensed under the terms of the MIT license.

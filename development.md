@@ -52,7 +52,7 @@ bun run build
 
 The build is written to `backend/app/frontend` and served by FastAPI at <http://localhost:8000>. Rebuild the frontend after making frontend changes.
 
-## Full Stack with Docker Compose
+## Vector8 with Docker Compose
 
 To run the backend and built frontend in Docker Compose:
 
