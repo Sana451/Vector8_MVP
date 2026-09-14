@@ -68,6 +68,16 @@ class Settings(BaseSettings):
     # OSRM Configuration
     OSRM_BASE_URL: str = "https://router.project-osrm.org"
 
+    # OpenAI Configuration
+    OPENAI_API_KEY: str | None = None
+
+    # Groq Configuration
+    GROQ_API_KEY: str | None = None
+
+    # LLM Provider Configuration
+    LLM_PROVIDER: str = "openai"  # Options: "openai", "groq"
+    LLM_MODEL: str | None = None  # Optional: uses default if not set
+
     def _check_default_secret(self, var_name: str, value: str | None) -> None:
         if value == "changethis":
             message = (

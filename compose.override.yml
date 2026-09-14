@@ -71,6 +71,7 @@ services:
       - ./backend/app/core:/app/backend/app/core
       - ./backend/app/infrastructure:/app/backend/app/infrastructure
       - ./backend/app/services:/app/backend/app/services
+      - ./backend/app/tools:/app/backend/app/tools
       - ./backend/app/crud.py:/app/backend/app/crud.py
       - ./backend/app/models.py:/app/backend/app/models.py
       - ./backend/app/utils.py:/app/backend/app/utils.py
