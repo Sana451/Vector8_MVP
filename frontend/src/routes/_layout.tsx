@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router"
+import { createFileRoute, Outlet, redirect, useLocation } from "@tanstack/react-router"
 
 import { Footer } from "@/components/Common/Footer"
 import AppSidebar from "@/components/Sidebar/AppSidebar"
@@ -21,6 +21,10 @@ export const Route = createFileRoute("/_layout")({
 })
 
 function Layout() {
+  const location = useLocation()
+  // Hide footer on chat page for better UX with large message lists
+  const isChatPage = location.pathname === "/chat"
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -33,7 +37,7 @@ function Layout() {
             <Outlet />
           </div>
         </main>
-        <Footer />
+        {!isChatPage && <Footer />}
       </SidebarInset>
     </SidebarProvider>
   )

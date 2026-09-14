@@ -13,9 +13,11 @@
 - **Multiple Access Methods**: 
   - 🖥️ **Demo UI** - Beautiful interactive dashboard with map visualization
   - 📚 **Swagger API** - Full REST API documentation and testing interface
+  - 🤖 **AI Assistant Chat** - Natural language interface with choice of multiple LLM providers (OpenAI, Groq)
 - **Route Storage**: Save routes to PostgreSQL database with complete geometry data
 - **Route Visualization**: Interactive Leaflet map showing distance, duration, and route geometry
 - **Statistics Display**: Real-time route metrics with smooth animations
+- **Intelligent AI**: Ask the AI assistant in plain English to calculate routes and get formatted responses
 
 ### 📸 Routes Demo Interface
 
@@ -48,6 +50,26 @@ cd Vector8
 - Ports 8000, 5432, 8080 available
 - `.env` file (automatically created from `.env.example` if missing)
 - `bun` package manager (optional - Docker will be used as fallback for frontend build)
+- **Groq API Key** *(optional, required only for AI Assistant chat)* - Get from [https://console.groq.com/keys](https://console.groq.com/keys)
+
+### ⚙️ Optional: Setup Groq API Key for AI Assistant
+
+To enable the AI Assistant Chat feature:
+
+1. Get your Groq AI API key from: [https://console.groq.com/keys](https://console.groq.com/keys)
+2. Add it to your `.env` file:
+   ```env
+   LLM_PROVIDER=groq
+   GROQ_API_KEY=sk-proj-your-actual-key-here
+   ```
+3. Make sure you have:
+   - ✅ Valid API key (not revoked or expired)
+   - ✅ Payment method added to Groq account
+   - ✅ Available credits or active subscription
+
+> **Note:** The AI Assistant is optional. All other features work without it.
+> 
+> **Multi-Provider Support:** You can also use **Groq** instead of OpenAI! See [LLM_PROVIDER_GUIDE.md](./LLM_PROVIDER_GUIDE.md) for more info.
 
 ### Option 1: Using Makefile (Recommended)
 
@@ -117,6 +139,7 @@ Once started, open your browser:
 
 - **🎨 Frontend Dashboard**: http://localhost:8000
 - **🗺️ Routes Demo**: http://localhost:8000/routes
+- **🤖 AI Assistant Chat**: http://localhost:8000/chat *(requires valid GROQ_API_KEY or OPENAI_API_KEY in .env)*
 - **📚 API Documentation (Swagger)**: http://localhost:8000/docs
 - **💾 Database UI (Adminer)**: http://localhost:8080
 - **📧 Email Testing (Mailpit)**: http://localhost:8025
@@ -255,6 +278,174 @@ After requesting routes, verify they were saved in PostgreSQL:
 
 ---
 
+## 🤖 AI Assistant Chat with MCP Integration
+
+Vector8 includes an advanced **AI Assistant** powered by OpenAI with **Model Context Protocol (MCP)** integration. This allows the AI to intelligently process natural language requests and automatically call routing functions.
+
+### ✨ Key Features of MCP Integration
+
+- **Natural Language Processing**: Ask the AI assistant in plain English to calculate routes
+- **Automatic Tool Calling**: AI automatically determines when and how to call route calculation tools
+- **Context Awareness**: AI understands geography, distances, and travel times
+- **Intelligent Responses**: Receives tool results and formats them into human-readable answers
+- **Conversation History**: Maintains context across multiple messages
+
+### 🎨 AI Assistant Chat Interface
+
+![AI Assistant Chat Interface](img/ai-assistant.png)
+
+The intuitive chat interface allows you to interact with the AI assistant in natural language, with beautiful message formatting supporting Markdown tables, code blocks, lists, and more.
+
+### 🎯 Real-World Example
+
+**You ask:** "What's the distance and time to drive from Dallas to Houston?"
+
+**Behind the scenes:**
+1. AI receives your message
+2. AI recognizes a route calculation is needed
+3. AI calls the `calculate_route` tool with Dallas/Houston coordinates
+4. Tool returns: distance (380 km), time (4 hours)
+5. AI formats the response in natural language
+
+**AI responds:** "The drive from Dallas to Houston is approximately 380 km (236 miles) and takes about 4 hours of driving time."
+
+### ⚙️ How MCP Works in Vector8
+
+```
+User Input (Natural Language)
+         ↓
+    OpenAI API
+    (gpt-3.5-turbo)
+         ↓
+AI decides: "I need to call calculate_route"
+         ↓
+Tool Execution
+(calculate_route function)
+         ↓
+API Call to /api/v1/routes/
+         ↓
+Results returned to AI
+         ↓
+AI formats response
+         ↓
+User sees answer
+```
+
+### 📋 Prerequisites for AI Chat
+
+**⚠️ IMPORTANT:** To use the AI Assistant, you must have:
+
+1. **Valid OpenAI API Key** in `.env` file
+   ```env
+   OPENAI_API_KEY=sk-proj-YOUR_ACTUAL_KEY_HERE
+   ```
+   
+2. **Active OpenAI Account** with:
+   - ✅ Valid API key (not revoked or expired)
+   - ✅ Payment method added (Credit Card)
+   - ✅ Available credits or active subscription
+   
+3. **Network Access** to OpenAI API (api.openai.com)
+
+Get your API key from: https://platform.openai.com/account/api-keys
+
+### 🚀 How to Use the AI Chat
+
+#### Via Web Interface
+
+1. **Login to Dashboard**
+   - Open http://localhost:8000 in your browser
+   - Login with your account
+
+2. **Access AI Assistant**
+   - Click **"AI Assistant"** in the sidebar menu
+   - Or navigate to http://localhost:8000/chat
+
+3. **Chat with the AI**
+   - Type your message: *"Calculate route from New York to Boston"*
+   - Press Enter or click Send
+   - AI will automatically calculate the route and respond
+
+#### Via API
+
+```bash
+curl -X POST http://localhost:8000/api/v1/chat/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "What is the distance between Los Angeles and San Francisco?",
+    "history": []
+  }'
+```
+
+**Response:**
+```json
+{
+  "response": "The distance between Los Angeles and San Francisco is approximately 559 km (347 miles) and takes about 6 hours to drive."
+}
+```
+
+### 💡 Example Queries
+
+Try asking the AI:
+- "Calculate a route from Dallas to Houston"
+- "How long does it take to drive from NYC to Boston?"
+- "What's the distance between these coordinates: 40.7128, -74.0060 and 34.0522, -118.2437?"
+- "Show me the route details from San Francisco to Los Angeles"
+
+### ⚙️ Configuration
+
+The AI Chat uses multiple LLM provider options:
+
+- **OpenAI (default)**: GPT-3.5-turbo for balanced performance
+- **Groq**: Ultra-fast inference with Mixtral-8x7b
+
+To change provider or model, edit `.env`:
+```env
+LLM_PROVIDER=openai  # or "groq"
+OPENAI_API_KEY=sk-proj-your-key  # if using OpenAI
+GROQ_API_KEY=gsk_your-key        # if using Groq
+LLM_MODEL=gpt-3.5-turbo          # optional: override default model
+```
+
+Then restart Docker:
+```bash
+docker compose down
+docker compose up -d
+```
+
+### 🐛 Troubleshooting AI Chat
+
+**Error: "AI service is not properly configured"**
+- Ensure `OPENAI_API_KEY` is set in `.env` file
+- Rebuild Docker: `docker compose down && docker compose up -d`
+- Wait 15-20 seconds for containers to start
+
+**Error: "Incorrect API key provided" (401 Unauthorized)**
+- The API key is not recognized by your LLM provider
+- **For OpenAI**: Check https://platform.openai.com/account/api-keys
+- **For Groq**: Check https://console.groq.com/keys
+- Verify that both `LLM_PROVIDER` and corresponding API key are set in `.env`
+- Create a new API key from provider and update `.env`
+- Restart Docker containers
+
+**Error: "Configuration error ... not configured"**
+- Ensure the API key for your chosen provider is set in `.env`
+- **If using OpenAI**: Make sure `OPENAI_API_KEY=...` is set
+- **If using Groq**: Make sure `GROQ_API_KEY=...` is set  
+- Restart Docker: `docker compose down && docker compose up -d`
+
+**Error: "Unknown LLM provider"**
+- Check that `LLM_PROVIDER` value is correct (must be lowercase: `openai` or `groq`)
+- Ensure no typos in `.env`
+- Restart Docker
+
+**Error: "You exceeded your current quota"**
+- Your LLM provider account ran out of credits or hit usage limits
+- **For OpenAI**: Add payment method at https://platform.openai.com/account/billing/overview
+- **For Groq**: Check quota at https://console.groq.com/usage
+
+---
+
 ## Technology Stack and Features
 
 - ⚡ [**FastAPI**](https://fastapi.tiangolo.com) for the Python backend API.
@@ -279,6 +470,13 @@ After requesting routes, verify they were saved in PostgreSQL:
 - 📬 [Mailpit](https://mailpit.axllent.org) for local email testing during development.
 - ✅ Tests with [Pytest](https://pytest.org).
 - 🏭 CI (continuous integration) and CD (continuous deployment) based on GitHub Actions.
+- 🤖 **AI Assistant with MCP Integration**:
+  - 🧠 Multi-provider LLM support (OpenAI, Groq, extensible)
+  - 💬 [OpenAI](https://openai.com) API for GPT-3.5-turbo and GPT-4
+  - ⚡ [Groq](https://groq.com) API for ultra-fast inference
+  - 🔗 Model Context Protocol (MCP) for intelligent tool calling
+  - 🛠️ Automatic route calculation through AI-driven tool execution
+  - 🔄 Easy provider switching via environment configuration
 
 ## 📚 Screenshots & Features
 
