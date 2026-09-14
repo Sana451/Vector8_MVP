@@ -44,32 +44,36 @@ cd Vector8
 
 ## ⚡ Quick Start
 
+### ⚠️ **IMPORTANT: AI Assistant Setup**
+
+To test the **AI Assistant Chat with MCP server**, you **MUST** do this before starting:
+
+1. **Copy the environment template**:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Get a Groq API Key** from: https://console.groq.com/keys
+   - Sign up (free account)
+   - Generate API key in your dashboard
+
+3. **Add the key to `.env` file**:
+   ```env
+   GROQ_API_KEY=gsk_your_actual_key_here
+   ```
+
+**Without this step, the AI chat will not work!** All other features will still work, but the AI Assistant will be unavailable.
+
+> **Tip**: You can also use OpenAI instead by setting `LLM_PROVIDER=openai` and adding `OPENAI_API_KEY` - see [LLM_PROVIDER_GUIDE.md](./LLM_PROVIDER_GUIDE.md)
+
+---
+
 ### System Requirements
 - **Docker and Docker Compose** installed ✅ (required)
 - ~5-10 minutes setup time
 - Ports 8000, 5432, 8080 available
-- `.env` file (automatically created from `.env.example` if missing)
+- `.env` file with **GROQ_API_KEY** configured (see section above)
 - `bun` package manager (optional - Docker will be used as fallback for frontend build)
-- **Groq API Key** *(optional, required only for AI Assistant chat)* - Get from [https://console.groq.com/keys](https://console.groq.com/keys)
-
-### ⚙️ Optional: Setup Groq API Key for AI Assistant
-
-To enable the AI Assistant Chat feature:
-
-1. Get your Groq AI API key from: [https://console.groq.com/keys](https://console.groq.com/keys)
-2. Add it to your `.env` file:
-   ```env
-   LLM_PROVIDER=groq
-   GROQ_API_KEY=sk-proj-your-actual-key-here
-   ```
-3. Make sure you have:
-   - ✅ Valid API key (not revoked or expired)
-   - ✅ Payment method added to Groq account
-   - ✅ Available credits or active subscription
-
-> **Note:** The AI Assistant is optional. All other features work without it.
-> 
-> **Multi-Provider Support:** You can also use **Groq** instead of OpenAI! See [LLM_PROVIDER_GUIDE.md](./LLM_PROVIDER_GUIDE.md) for more info.
 
 ### Option 1: Using Makefile (Recommended)
 
