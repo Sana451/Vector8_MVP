@@ -46,7 +46,7 @@ cd Vector8
 
 ### ⚠️ **IMPORTANT: AI Assistant Setup**
 
-To test the **AI Assistant Chat with MCP server**, you **MUST** do this before starting:
+To test the **AI Assistant Chat**, you **MUST** do this before starting:
 
 1. **Copy the environment template**:
    ```bash
@@ -282,11 +282,13 @@ After requesting routes, verify they were saved in PostgreSQL:
 
 ---
 
-## 🤖 AI Assistant Chat with MCP Integration
+## 🤖 AI Assistant Chat with Tool Calling
 
-Vector8 includes an advanced **AI Assistant** powered by OpenAI with **Model Context Protocol (MCP)** integration. This allows the AI to intelligently process natural language requests and automatically call routing functions.
+Vector8 includes an advanced **AI Assistant** powered by OpenAI or Groq using standard LLM **function calling** (also known as tool calling). This allows the AI to intelligently process natural language requests and automatically call routing functions.
 
-### ✨ Key Features of MCP Integration
+> **Note:** this is plain OpenAI/Groq-style function calling, not an implementation of the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) — there is no MCP server or client in this codebase.
+
+### ✨ Key Features of Tool Calling
 
 - **Natural Language Processing**: Ask the AI assistant in plain English to calculate routes
 - **Automatic Tool Calling**: AI automatically determines when and how to call route calculation tools
@@ -313,7 +315,7 @@ The intuitive chat interface allows you to interact with the AI assistant in nat
 
 **AI responds:** "The drive from Dallas to Houston is approximately 380 km (236 miles) and takes about 4 hours of driving time."
 
-### ⚙️ How MCP Works in Vector8
+### ⚙️ How Tool Calling Works in Vector8
 
 ```
 User Input (Natural Language)
@@ -455,8 +457,8 @@ docker compose up -d
 - ⚡ [**FastAPI**](https://fastapi.tiangolo.com) for the Python backend API.
   - 🧰 [SQLModel](https://sqlmodel.tiangolo.com) for the Python SQL database interactions (ORM).
   - 🔍 [Pydantic](https://docs.pydantic.dev), used by FastAPI, for the data validation and settings management.
-  - 💾 [PostgreSQL](https://www.postgresql.org) as the SQL database.
-  - 🗺️ PostGIS for spatial data and route geometry storage.
+  - 💾 [PostgreSQL](https://www.postgresql.org) (via the `postgis/postgis` image) as the SQL database.
+  - 🗺️ PostGIS extension enabled for spatial functions; route geometry itself is currently stored as GeoJSON text rather than a native `geometry` column (see [ARCHITECTURE.md](./ARCHITECTURE.md)).
 - 🚀 [React](https://react.dev) for the frontend.
   - 🧩 Built into the backend application and served by FastAPI on the same domain as the API.
   - 💃 Using TypeScript, hooks, [Vite](https://vitejs.dev), and other parts of a modern frontend stack.
@@ -474,13 +476,14 @@ docker compose up -d
 - 📬 [Mailpit](https://mailpit.axllent.org) for local email testing during development.
 - ✅ Tests with [Pytest](https://pytest.org).
 - 🏭 CI (continuous integration) and CD (continuous deployment) based on GitHub Actions.
-- 🤖 **AI Assistant with MCP Integration**:
+- 🤖 **AI Assistant with LLM Function Calling**:
   - 🧠 Multi-provider LLM support (OpenAI, Groq, extensible)
   - 💬 [OpenAI](https://openai.com) API for GPT-3.5-turbo and GPT-4
   - ⚡ [Groq](https://groq.com) API for ultra-fast inference
-  - 🔗 Model Context Protocol (MCP) for intelligent tool calling
+  - 🔗 Standard OpenAI/Groq-style function calling for intelligent tool calling (not MCP)
   - 🛠️ Automatic route calculation through AI-driven tool execution
   - 🔄 Easy provider switching via environment configuration
+  - 🚦 Per-user rate limiting on the chat endpoint
 
 ## 📚 Screenshots & Features
 
@@ -536,7 +539,7 @@ docker compose up -d
 This project demonstrates:
 - ✅ Full-stack architecture with FastAPI + React
 - ✅ Real-time data visualization with Leaflet maps
-- ✅ Database optimization with PostGIS for spatial queries
+- ✅ PostGIS-enabled PostgreSQL, ready for spatial queries once route geometry moves to a native `geometry` column
 - ✅ API-first development with automatic OpenAPI documentation
 - ✅ Docker-based local development workflow
 - ✅ Production-ready security practices (JWT, password hashing)

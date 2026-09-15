@@ -64,27 +64,18 @@ def upgrade():
     # Create index on created_at
     op.create_index('ix_route_created_at', 'route', ['created_at'])
 
-    # Create spatial index on geometry if PostGIS is available
-    if use_postgis:
-        try:
-            op.create_index(
-                'ix_route_geometry',
-                'route',
-                ['route_geometry'],
-                postgresql_using='gist'
-            )
-        except Exception:
-            # Spatial index failed, continue without it
-            pass
+    # Note: `route_geometry` is stored as plain TEXT (see columns above), not
+    # a PostGIS `geometry` column, so a GiST spatial index cannot be created
+    # on it — GiST has no default operator class for text and the attempt
+    # aborts the migration's transaction even inside a try/except (Postgres
+    # poisons the whole transaction on the first SQL error; Python catching
+    # the exception doesn't undo that). Enabling PostGIS above still buys
+    # you `ST_*` functions usable via raw SQL/casts, but real spatial
+    # indexing would require migrating this column to an actual
+    # `geoalchemy2.Geometry` type.
 
 
 def downgrade():
-    # Drop indexes
-    try:
-        op.drop_index('ix_route_geometry', table_name='route')
-    except Exception:
-        pass
-
     try:
         op.drop_index('ix_route_created_at', table_name='route')
     except Exception:

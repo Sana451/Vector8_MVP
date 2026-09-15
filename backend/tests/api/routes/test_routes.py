@@ -15,7 +15,9 @@ from app.infrastructure.osrm import (
 from app.models import RouteGeometry
 
 
-def test_create_route_success(client: TestClient) -> None:
+def test_create_route_success(
+    client: TestClient, superuser_token_headers: dict[str, str]
+) -> None:
     """Test successful route creation."""
     # Mock OSRM response
     mock_geometry = RouteGeometry(
@@ -47,6 +49,7 @@ def test_create_route_success(client: TestClient) -> None:
     ):
         response = client.post(
             f"{settings.API_V1_STR}/routes/",
+            headers=superuser_token_headers,
             json={
                 "start_lat": 32.7767,
                 "start_lon": -96.7970,
@@ -66,7 +69,9 @@ def test_create_route_success(client: TestClient) -> None:
     assert "geometry" in content
 
 
-def test_create_route_invalid_coordinates(client: TestClient) -> None:
+def test_create_route_invalid_coordinates(
+    client: TestClient, superuser_token_headers: dict[str, str]
+) -> None:
     """Test route creation with invalid coordinates."""
     with patch(
         "app.api.routes.routes.RouteService.calculate_and_save_route",
@@ -74,6 +79,7 @@ def test_create_route_invalid_coordinates(client: TestClient) -> None:
     ):
         response = client.post(
             f"{settings.API_V1_STR}/routes/",
+            headers=superuser_token_headers,
             json={
                 "start_lat": 100.0,  # Invalid
                 "start_lon": -96.0,
@@ -85,7 +91,9 @@ def test_create_route_invalid_coordinates(client: TestClient) -> None:
     assert response.status_code == 422
 
 
-def test_create_route_not_found(client: TestClient) -> None:
+def test_create_route_not_found(
+    client: TestClient, superuser_token_headers: dict[str, str]
+) -> None:
     """Test route creation when no route found."""
     with patch(
         "app.api.routes.routes.RouteService.calculate_and_save_route",
@@ -93,6 +101,7 @@ def test_create_route_not_found(client: TestClient) -> None:
     ):
         response = client.post(
             f"{settings.API_V1_STR}/routes/",
+            headers=superuser_token_headers,
             json={
                 "start_lat": 32.7767,
                 "start_lon": -96.7970,
@@ -106,7 +115,9 @@ def test_create_route_not_found(client: TestClient) -> None:
     assert "No route found" in content["detail"]
 
 
-def test_create_route_timeout(client: TestClient) -> None:
+def test_create_route_timeout(
+    client: TestClient, superuser_token_headers: dict[str, str]
+) -> None:
     """Test route creation with timeout."""
     with patch(
         "app.api.routes.routes.RouteService.calculate_and_save_route",
@@ -114,6 +125,7 @@ def test_create_route_timeout(client: TestClient) -> None:
     ):
         response = client.post(
             f"{settings.API_V1_STR}/routes/",
+            headers=superuser_token_headers,
             json={
                 "start_lat": 32.7767,
                 "start_lon": -96.7970,
@@ -125,7 +137,9 @@ def test_create_route_timeout(client: TestClient) -> None:
     assert response.status_code == 504
 
 
-def test_create_route_server_error(client: TestClient) -> None:
+def test_create_route_server_error(
+    client: TestClient, superuser_token_headers: dict[str, str]
+) -> None:
     """Test route creation with server error."""
     with patch(
         "app.api.routes.routes.RouteService.calculate_and_save_route",
@@ -133,6 +147,7 @@ def test_create_route_server_error(client: TestClient) -> None:
     ):
         response = client.post(
             f"{settings.API_V1_STR}/routes/",
+            headers=superuser_token_headers,
             json={
                 "start_lat": 32.7767,
                 "start_lon": -96.7970,

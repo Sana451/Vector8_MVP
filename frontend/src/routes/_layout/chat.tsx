@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AIChat } from "@/components/Chat";
 
-// @ts-ignore
 export const Route = createFileRoute("/_layout/chat")({
   component: ChatPage,
 });

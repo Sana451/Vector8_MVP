@@ -17,7 +17,10 @@ export const Route = createFileRoute("/_layout/routes")({
 });
 
 function RoutesPage() {
-  const API_BASE_URL = "http://localhost:8000";
+  // Same source as the generated API client (main.tsx) and AIChat — a
+  // hardcoded "http://localhost:8000" here would silently diverge from
+  // VITE_API_URL whenever the backend runs on a different port.
+  const API_BASE_URL = import.meta.env.VITE_API_URL ?? "";
   const TIMEOUT_MS = 5000;
 
   const [activeIndex, setActiveIndex] = useState(0);

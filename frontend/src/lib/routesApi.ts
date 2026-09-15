@@ -42,9 +42,13 @@ export async function callBackend(
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), timeoutMs);
   try {
+    const token = localStorage.getItem("access_token");
     const res = await fetch(`${apiBase}/api/v1/routes/`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
       body: JSON.stringify({
         start_lat: start.lat,
         start_lon: start.lon,

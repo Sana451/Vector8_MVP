@@ -2,12 +2,17 @@ import { useState } from "react";
 import type { RouteResult } from "@/lib/routesApi";
 
 function highlight(obj: RouteResult): string {
-  const json = JSON.stringify(obj, null, 2);
-  return json
+  // Escape all HTML-relevant characters first so any string value in the
+  // payload (not just today's numeric fields) can never break out of the
+  // <pre> into markup, before the syntax-highlighting spans are added.
+  const json = JSON.stringify(obj, null, 2)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
-    .replace(/"(\w+)":/g, '<span class="json-key">"$1"</span>:')
-    .replace(/: "([^"]*)"/g, ': <span class="json-str">"$1"</span>')
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+  return json
+    .replace(/&quot;(\w+)&quot;:/g, '<span class="json-key">&quot;$1&quot;</span>:')
+    .replace(/: &quot;([^&]*)&quot;/g, ': <span class="json-str">&quot;$1&quot;</span>')
     .replace(/: (-?\d+\.?\d*)/g, ': <span class="json-num">$1</span>');
 }
 

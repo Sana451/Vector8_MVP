@@ -6,6 +6,8 @@ from typing import Any
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel, Field
 
+from app.api.deps import CurrentUser
+from app.core.rate_limit import chat_rate_limiter
 from app.services.chat_service import ChatService
 
 router = APIRouter(prefix="/chat", tags=["chat"])
@@ -36,13 +38,14 @@ class ChatResponse(BaseModel):
 
 
 @router.post("/", response_model=ChatResponse, status_code=status.HTTP_200_OK)
-async def chat(request: ChatRequest) -> Any:
+async def chat(current_user: CurrentUser, request: ChatRequest) -> Any:
     """Process a chat message with AI assistance.
 
     The AI can calculate routes by calling the calculate_route tool.
     Coordinates should be provided as latitude and longitude values.
 
     Args:
+        current_user: Authenticated user
         request: Chat request with user message and optional history
 
     Returns:
@@ -51,6 +54,8 @@ async def chat(request: ChatRequest) -> Any:
     Raises:
         HTTPException: If OpenAI API is not configured or API call fails
     """
+    chat_rate_limiter.check(str(current_user.id))
+
     try:
         logger.info(f"Processing chat request: {request.message[:100]}...")
 
