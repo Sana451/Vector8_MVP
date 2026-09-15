@@ -5,7 +5,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel, Field
 
-from app.api.deps import SessionDep
+from app.api.deps import CurrentUser, SessionDep
 from app.infrastructure.osrm import (
     OSRMException,
     OSRMInvalidCoordinatesError,
@@ -39,12 +39,13 @@ class RouteRequest(BaseModel):
 
 @router.post("/", response_model=RoutePublic, status_code=status.HTTP_201_CREATED)
 async def create_route(
-    *, session: SessionDep, route_request: RouteRequest
+    *, session: SessionDep, current_user: CurrentUser, route_request: RouteRequest
 ) -> Any:
     """Calculate route between two coordinates.
 
     Args:
         session: Database session
+        current_user: Authenticated user
         route_request: Request with start and end coordinates
 
     Returns:

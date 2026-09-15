@@ -78,6 +78,10 @@ class Settings(BaseSettings):
     LLM_PROVIDER: str = "openai"  # Options: "openai", "groq"
     LLM_MODEL: str | None = None  # Optional: uses default if not set
 
+    # Chat rate limiting (per authenticated user)
+    CHAT_RATE_LIMIT_MAX_REQUESTS: int = 10
+    CHAT_RATE_LIMIT_WINDOW_SECONDS: int = 60
+
     def _check_default_secret(self, var_name: str, value: str | None) -> None:
         if value == "changethis":
             message = (

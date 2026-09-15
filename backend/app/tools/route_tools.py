@@ -1,4 +1,9 @@
-"""MCP Tools for route calculation."""
+"""LLM function-calling tools for route calculation.
+
+These are plain OpenAI/Groq function-calling tool definitions, not an
+implementation of the Model Context Protocol (MCP) — there is no MCP
+server or client here.
+"""
 
 import httpx
 import logging
@@ -12,8 +17,9 @@ async def calculate_route_tool(
 ) -> dict[str, Any]:
     """Calculate a route between two coordinates using the Vector8 API.
 
-    This is an MCP tool that can be called by the AI assistant to calculate
-    optimal routes between any two geographical points.
+    This is an LLM function-calling tool that can be called by the AI
+    assistant to calculate optimal routes between any two geographical
+    points.
 
     Args:
         start_lat: Starting latitude (must be between -90 and 90)

@@ -49,11 +49,18 @@ export function AIChat({ onClose }: AIChatProps) {
         content: msg.content,
       }));
 
-      // Call the chat API
-      const response = await fetch("/api/v1/chat/", {
+      // Call the chat API (requires auth, like every other API route).
+      // Uses VITE_API_URL, same as the generated client in main.tsx — a bare
+      // relative path only resolves to the backend when the frontend is
+      // built and served by FastAPI on the same origin, not when running
+      // the standalone Vite dev server on :5173.
+      const token = localStorage.getItem("access_token");
+      const apiBaseUrl = import.meta.env.VITE_API_URL ?? "";
+      const response = await fetch(`${apiBaseUrl}/api/v1/chat/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify({
           message: inputValue,

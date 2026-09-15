@@ -123,7 +123,9 @@ Vector8/
 ┌──────────────────────────────────────────────────────────────┐
 │ 5. CRUD Layer (crud.py)                                      │
 │    - Saves Route object to database via SQLModel             │
-│    - Stores geometry in PostGIS format                       │
+│    - Stores geometry as GeoJSON text (PostGIS extension is    │
+│      enabled on the DB, but this column is not yet a native   │
+│      `geometry` type — see schema note below)                 │
 │    - Returns created Route with ID                           │
 └──────────────────┬───────────────────────────────────────────┘
                    ▼
@@ -363,7 +365,8 @@ CREATE TABLE item (
     created_at TIMESTAMP WITH TZ
 );
 
--- Routes (with PostGIS support)
+-- Routes (DB has the PostGIS extension enabled, but the columns below
+-- are plain TEXT/FLOAT — no native `geometry` column is used yet)
 CREATE TABLE route (
     id UUID PRIMARY KEY,
     start_lat FLOAT NOT NULL,
@@ -372,8 +375,9 @@ CREATE TABLE route (
     end_lon FLOAT NOT NULL,
     distance_meters FLOAT NOT NULL,
     duration_seconds FLOAT NOT NULL,
-    geometry_geojson TEXT,           -- GeoJSON LineString
-    route_geometry GEOMETRY(LineString),  -- PostGIS geometry
+    geometry_geojson TEXT,           -- GeoJSON LineString (actually populated)
+    route_geometry TEXT,             -- reserved for a future native PostGIS
+                                      -- geometry column; unused today
     created_at TIMESTAMP WITH TZ
 );
 

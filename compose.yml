@@ -18,7 +18,10 @@ services:
       - --log
 
   db:
-    image: postgres:18
+    # postgis/postgis ships PostgreSQL with the PostGIS extension preinstalled,
+    # so `CREATE EXTENSION postgis` (run by the route-table migration) actually
+    # succeeds instead of silently falling back to plain-TEXT geometry storage.
+    image: postgis/postgis:16-3.5
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d app"]
       interval: 10s
@@ -26,7 +29,7 @@ services:
       start_period: 30s
       timeout: 10s
     volumes:
-      - app-db-data:/var/lib/postgresql
+      - app-db-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?Variable not set}
       - POSTGRES_DB=app
